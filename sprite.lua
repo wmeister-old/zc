@@ -5,17 +5,29 @@ local sheets = {}
 local sprites = {}
 
 function initialize()
-   sheets[1] = resource.bmp("sprite_sheet-1")
-   new("zelda", 1, 0, 0, 16, 16)
+   sheets[1] = { image = resource.bmp("sprite_sheet-1"),
+	         cell_width = 16,
+	         cell_height = 16}
+
+   new("zelda", 1, 1, 1)
 end
 
-function new(name, sheet, x, y, width, height)
-   sprites[name] = { sheet = sheet,
-		     quad  = love.graphics.newQuad(x, y, width, height, sheets[sheet]:getWidth(), sheets[sheet]:getHeight())}
+function new(name, sheet_id, row, col)
+   local spritesheet, cell_width, cell_height
+   spritesheet = sheets[sheet_id]["image"]
+   cell_width = sheets[sheet_id]["cell_width"]
+   cell_height = sheets[sheet_id]["cell_height"]
+
+   sprites[name] = { sheet_id = sheet_id,
+		     quad  = love.graphics.newQuad((row-1) * cell_width,
+						   (col-1) * cell_height,
+						   cell_width, cell_height,
+						   spritesheet:getWidth(), 
+						   spritesheet:getHeight())}
 end
 
 function draw(name, x, y)
    local sprite = sprites[name]
 
-   love.graphics.drawq(sheets[sprite["sheet"]], sprite["quad"], x, y)
+   love.graphics.drawq(sheets[sprite["sheet_id"]]["image"], sprite["quad"], x, y)
 end
